@@ -1,9 +1,6 @@
 import numpy as np
 
 
-
-
-
 def generate_potential_2d_spirals(IN_n_states,IN_number_of_branches,flag_visualize):
     """
     The spiral surface is a modification of the Anormal distribution, which is
@@ -37,5 +34,16 @@ def generate_potential_2d_spirals(IN_n_states,IN_number_of_branches,flag_visuali
         for y_id in range(IN_n_states[2]):
 
             # Transform coordinates from (x,y) to (angle,Distance)
+            angle = np.arctan2(x[x_id], y[y_id])
+            distance_squared = x[x_id]**2 + y[y_id]**2;  # BIG MODIFICATION
+            
+            # Use the chosen shape function
+            r = (np.sin((angle+warping_coeff*distance_squared)*n_petals)*sinus_to_distance_coeff*distance_squared+2)
+
+            # Apply the formula
+            potential_numeric[x_id,y_id] = -1*np.exp( -1/2*(1)./(sigma*r)^2)*(1+decrease_coeff*distance_squared)
+
+
+
 
     return potential_numeric, potential_symbolic, x, y
