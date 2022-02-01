@@ -1,5 +1,5 @@
 import numpy as np
-
+import sympy as spy
 
 def generate_potential_2d_spirals(IN_n_states,IN_number_of_branches,flag_visualize):
     """
@@ -41,8 +41,10 @@ def generate_potential_2d_spirals(IN_n_states,IN_number_of_branches,flag_visuali
             r = (np.sin((angle+warping_coeff*distance_squared)*n_petals)*sinus_to_distance_coeff*distance_squared+2)
 
             # Apply the formula
-            potential_numeric[x_id,y_id] = -1*np.exp( -1/2*(1)./(sigma*r)^2)*(1+decrease_coeff*distance_squared)
+            potential_numeric[x_id,y_id] = -1*np.exp( -1/2*(1)/(sigma*r)^2)*(1+decrease_coeff*distance_squared)
 
+    potential_numeric = potential_numeric - np.min(potential_numeric[:]); # Shift so that minimum=0
+    potential_numeric = potential_numeric/np.sum(potential_numeric[:]); # Normalize at the end because used non-normalized shape function r.
 
 
 
