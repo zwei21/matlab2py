@@ -18,8 +18,8 @@ def generate_potential_2d_Zshape_numeric(IN_n_states,flag_visualize):
     y_min = -1
     y_max = 3
 
-    x = np.linspace(x_min,x_max,IN_n_states[1]);
-    y = np.linspace(y_min,y_max,IN_n_states[2]);
+    x = np.linspace(x_min,x_max,IN_n_states[0]);
+    y = np.linspace(y_min,y_max,IN_n_states[1]);
 
     #---Hyper-parameters---#
     border_coeff = 1; # Coefficient of borders 
@@ -31,7 +31,7 @@ def generate_potential_2d_Zshape_numeric(IN_n_states,flag_visualize):
     mu_1 = [-1.5,-0.5]
     mu_2 = [1.5,2.5]
     sigm_center_well = 0.4 # Sigma of some of the wells, sigm for sigma
-    covar_mat_well = np.diag(np.dot(np.ones(1,len(IN_n_states)),sigm_center_well))
+    covar_mat_well = np.diag(np.dot(np.ones((1,len(IN_n_states)),sigm_center_well))
 
     mu_3 = [-0.5, 0]
     sig = [0.7, 0.28] # Origion: [1, 0.4] * 0.7 = result, flat one

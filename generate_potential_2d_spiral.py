@@ -16,8 +16,8 @@ def generate_potential_2d_spirals_numeric(IN_n_states,IN_number_of_branches,flag
     y_min = -20
     y_max = 20
 
-    x = np.linspace(x_min,x_max,IN_n_states(1))
-    y = np.linspace(y_min,y_max,IN_n_states(2))
+    x = np.linspace(x_min,x_max,IN_n_states[0])
+    y = np.linspace(y_min,y_max,IN_n_states[1])
 
     # Hyper Parameters
     sigma = 0.35 # Spiral
