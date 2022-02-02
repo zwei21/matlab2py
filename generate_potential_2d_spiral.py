@@ -1,7 +1,7 @@
 import numpy as np
 import sympy as spy
 
-def generate_potential_2d_spirals(IN_n_states,IN_number_of_branches,flag_visualize):
+def generate_potential_2d_spirals_numeric(IN_n_states,IN_number_of_branches,flag_visualize):
     """
     The spiral surface is a modification of the Anormal distribution, which is
     a kind of generalization of the multivariate normal distribution
@@ -48,4 +48,7 @@ def generate_potential_2d_spirals(IN_n_states,IN_number_of_branches,flag_visuali
 
 
 
-    return potential_numeric, potential_symbolic, x, y
+    return potential_numeric, x, y
+
+# Sympy
+# TODO

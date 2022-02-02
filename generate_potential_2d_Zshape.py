@@ -1,9 +1,9 @@
 import numpy as np
-
+import scipy.stats as stats
 #----Utils----#
 
 
-def generate_potential_2d_Zshape(IN_n_states,flag_visualize):
+def generate_potential_2d_Zshape_numeric(IN_n_states,flag_visualize):
     """
     The Zshape surface is a weighted sum of 2d Normal distributions and
     exponential functions
@@ -61,7 +61,19 @@ def generate_potential_2d_Zshape(IN_n_states,flag_visualize):
             border_3 = np.exp(y_min - y(y_id))
             border_4 = np.exp(y(y_id) - y_max)
 
-            #--WELLS--# # This requires self-made multivariate normal distribution generating function
+            #--WELLS--# # This requires multivariate normal distribution generating function
+            well_1 = stats.multivariate_normal([x[x_id],y[y_id]],mu_1, covar_mat_well)
+            well_2 = stats.multivariate_normal([x[x_id],y[y_id]],mu_2, covar_mat_well)
+            well_3 = stats.multivariate_normal([x[x_id],y[y_id]],mu_3, colvar_mat_3) # Numeric expression
+            well_4 = stats.multivariate_normal([x[x_id],y[y_id]],mu_4, colvar_mat_4)
+            well_5 = stats.multivariate_normal([x[x_id],y[y_id]],mu_5, colvar_mat_5)  
 
+            border_contribution = (border_1 + border_2 + border_3 + border_4) * border_coeff
+            well_contribution = (well_1 + well_2+ well_3+ well_4 + well_5) * well_coeff
 
-    return potential_numeric, potential_symbolic, x, y
+            potential_numeric[x_id,y_id] = border_contribution - well_contribution
+
+    return potential_numeric, x, y
+
+    # Sympy
+    # TODO
