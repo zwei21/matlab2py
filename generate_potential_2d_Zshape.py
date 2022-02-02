@@ -1,5 +1,8 @@
 import numpy as np
 
+#----Utils----#
+
+
 def generate_potential_2d_Zshape(IN_n_states,flag_visualize):
     """
     The Zshape surface is a weighted sum of 2d Normal distributions and
@@ -27,8 +30,38 @@ def generate_potential_2d_Zshape(IN_n_states,flag_visualize):
     # Section "Bivariate case" in [https://en.wikipedia.org/wiki/Multivariate_normal_distribution]
     mu_1 = [-1.5,-0.5]
     mu_2 = [1.5,2.5]
-    sigm_center_well = 0.4 # Sigma of some of the wells
+    sigm_center_well = 0.4 # Sigma of some of the wells, sigm for sigma
     covar_mat_well = np.diag(np.dot(np.ones(1,len(IN_n_states)),sigm_center_well))
+
+    mu_3 = [-0.5, 0]
+    sig = [0.7, 0.28] # Origion: [1, 0.4] * 0.7 = result, flat one
+    ro = 0.7
+    colvar_mat_3 = [[sig(1)**2, ro*sig(1)*sig(2)],[ro*sig(1)*sig(2), sig(2)**2]]
+
+    mu_4 = [0, 1]
+    sig = [0.7, 0.7] # Origion: [1, 1] * 0.7, Diagonal one
+    ro = -0.8
+    colvar_mat_4 = [[sig(1)**2, ro*sig(1)*sig(2)],[ro*sig(1)*sig(2), sig(2)**2]]
+
+    mu_5 = [0.5, 2]
+    sig = [0.7, 0.28] # Origion: [1, 0.4] * 0.7 = result, flat one
+    ro = 0.7
+    colvar_mat_5 = [[sig(1)**2, ro*sig(1)*sig(2)],[ro*sig(1)*sig(2), sig(2)**2]]
+
+    #---INSTANTIATION---#
+    potential_numeric = np.zeros(IN_n_states)
+
+    #---Run---#
+    for x_id in range(IN_n_states[1]):
+        for y_id in range(IN_n_states[2]):
+
+            #--Borders (Potential increase to infinity outside of [x_min,x_max] and [y_min,y_max])--#
+            border_1 = np.exp(x_min - x(x_id))
+            border_2 = np.exp(x(x_id) - x_max)
+            border_3 = np.exp(y_min - y(y_id))
+            border_4 = np.exp(y(y_id) - y_max)
+
+            #--WELLS--# # This requires self-made multivariate normal distribution generating function
 
 
     return potential_numeric, potential_symbolic, x, y
