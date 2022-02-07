@@ -1,5 +1,9 @@
 import numpy as np
 import scipy.stats as stats
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from tqdm import tqdm
+import sympy as spy
 #----Utils----#
 
 
@@ -31,42 +35,44 @@ def generate_potential_2d_Zshape_numeric(IN_n_states,flag_visualize):
     mu_1 = [-1.5,-0.5]
     mu_2 = [1.5,2.5]
     sigm_center_well = 0.4 # Sigma of some of the wells, sigm for sigma
-    covar_mat_well = np.diag(np.dot(np.ones((1,len(IN_n_states)),sigm_center_well))
+    covar_mat_well = np.diag(np.dot(np.ones((len(IN_n_states))),sigm_center_well))
+    ###Debugging
+    print(covar_mat_well)
 
     mu_3 = [-0.5, 0]
     sig = [0.7, 0.28] # Origion: [1, 0.4] * 0.7 = result, flat one
     ro = 0.7
-    colvar_mat_3 = [[sig(1)**2, ro*sig(1)*sig(2)],[ro*sig(1)*sig(2), sig(2)**2]]
+    colvar_mat_3 = [[sig[0]**2, ro*sig[0]*sig[1]],[ro*sig[0]*sig[1], sig[1]**2]]
 
     mu_4 = [0, 1]
     sig = [0.7, 0.7] # Origion: [1, 1] * 0.7, Diagonal one
     ro = -0.8
-    colvar_mat_4 = [[sig(1)**2, ro*sig(1)*sig(2)],[ro*sig(1)*sig(2), sig(2)**2]]
+    colvar_mat_4 = [[sig[0]**2, ro*sig[0]*sig[1]],[ro*sig[0]*sig[1], sig[1]**2]]
 
     mu_5 = [0.5, 2]
     sig = [0.7, 0.28] # Origion: [1, 0.4] * 0.7 = result, flat one
     ro = 0.7
-    colvar_mat_5 = [[sig(1)**2, ro*sig(1)*sig(2)],[ro*sig(1)*sig(2), sig(2)**2]]
+    colvar_mat_5 = [[sig[0]**2, ro*sig[0]*sig[1]],[ro*sig[0]*sig[1], sig[1]**2]]
 
     #---INSTANTIATION---#
     potential_numeric = np.zeros(IN_n_states)
 
     #---Run---#
-    for x_id in range(IN_n_states[1]):
-        for y_id in range(IN_n_states[2]):
+    for x_id in tqdm(range(IN_n_states[0])):
+        for y_id in range(IN_n_states[1]):
 
             #--Borders (Potential increase to infinity outside of [x_min,x_max] and [y_min,y_max])--#
-            border_1 = np.exp(x_min - x(x_id))
-            border_2 = np.exp(x(x_id) - x_max)
-            border_3 = np.exp(y_min - y(y_id))
-            border_4 = np.exp(y(y_id) - y_max)
+            border_1 = np.exp(x_min - x[x_id])
+            border_2 = np.exp(x[x_id] - x_max)
+            border_3 = np.exp(y_min - y[y_id])
+            border_4 = np.exp(y[y_id] - y_max)
 
             #--WELLS--# # This requires multivariate normal distribution generating function
-            well_1 = stats.multivariate_normal([x[x_id],y[y_id]],mu_1, covar_mat_well)
-            well_2 = stats.multivariate_normal([x[x_id],y[y_id]],mu_2, covar_mat_well)
-            well_3 = stats.multivariate_normal([x[x_id],y[y_id]],mu_3, colvar_mat_3) # Numeric expression
-            well_4 = stats.multivariate_normal([x[x_id],y[y_id]],mu_4, colvar_mat_4)
-            well_5 = stats.multivariate_normal([x[x_id],y[y_id]],mu_5, colvar_mat_5)  
+            well_1 = stats.multivariate_normal.pdf(x=[x[x_id],y[y_id]],mean=mu_1, cov=covar_mat_well)
+            well_2 = stats.multivariate_normal.pdf(x=[x[x_id],y[y_id]],mean=mu_2, cov=covar_mat_well)
+            well_3 = stats.multivariate_normal.pdf(x=[x[x_id],y[y_id]],mean=mu_3, cov=colvar_mat_3) # Numeric expression
+            well_4 = stats.multivariate_normal.pdf(x=[x[x_id],y[y_id]],mean=mu_4, cov=colvar_mat_4)
+            well_5 = stats.multivariate_normal.pdf(x=[x[x_id],y[y_id]],mean=mu_5, cov=colvar_mat_5)  
 
             border_contribution = (border_1 + border_2 + border_3 + border_4) * border_coeff
             well_contribution = (well_1 + well_2+ well_3+ well_4 + well_5) * well_coeff

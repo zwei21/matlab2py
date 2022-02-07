@@ -1,4 +1,8 @@
 import numpy as np
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from tqdm import tqdm
 import sympy as spy
 
 def generate_potential_2d_spirals_numeric(IN_n_states,IN_number_of_branches,flag_visualize):
@@ -30,8 +34,8 @@ def generate_potential_2d_spirals_numeric(IN_n_states,IN_number_of_branches,flag
 
     # Run
     n_petals = IN_number_of_branches
-    for x_id in range(IN_n_states[1]):
-        for y_id in range(IN_n_states[2]):
+    for x_id in tqdm(range(IN_n_states[0])):
+        for y_id in range(IN_n_states[1]):
 
             # Transform coordinates from (x,y) to (angle,Distance)
             angle = np.arctan2(x[x_id], y[y_id])
@@ -41,13 +45,25 @@ def generate_potential_2d_spirals_numeric(IN_n_states,IN_number_of_branches,flag
             r = (np.sin((angle+warping_coeff*distance_squared)*n_petals)*sinus_to_distance_coeff*distance_squared+2)
 
             # Apply the formula
-            potential_numeric[x_id,y_id] = -1*np.exp( -1/2*(1)/(sigma*r)^2)*(1+decrease_coeff*distance_squared)
+            potential_numeric[x_id,y_id] = -1*np.exp( -1/2*(1)/(sigma*r)**2)*(1+decrease_coeff*distance_squared)
 
-    potential_numeric = potential_numeric - np.min(potential_numeric[:]); # Shift so that minimum=0
-    potential_numeric = potential_numeric/np.sum(potential_numeric[:]); # Normalize at the end because used non-normalized shape function r.
+    potential_numeric = potential_numeric - np.min(potential_numeric[:]) # Shift so that minimum=0
+    potential_numeric = potential_numeric/np.sum(potential_numeric[:]) # Normalize at the end because used non-normalized shape function r.
 
+    if flag_visualize:
+        x, y = np.meshgrid(x, y)
+        z = potential_numeric
+        fig = plt.figure()
+        ax = plt.axes(projection='3d')
 
+        surf = ax.plot_surface(x,y,z,cmap=cm.coolwarm,\
+                            linewidth=0, antialiased=False)
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('z')
 
+        fig.colorbar(surf, shrink=0.5, aspect=5)
+        
     return potential_numeric, x, y
 
 # Sympy
