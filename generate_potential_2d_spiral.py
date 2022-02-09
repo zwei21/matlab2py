@@ -64,7 +64,73 @@ def generate_potential_2d_spirals_numeric(IN_n_states,IN_number_of_branches,flag
 
         fig.colorbar(surf, shrink=0.5, aspect=5)
         
-    return potential_numeric, x, y
+    return x, y, potential_numeric
 
-# Sympy
-# TODO
+
+def generate_potential_2d_spirals_symbolic(IN_n_states,IN_number_of_branches,flag_visualize):
+    # Sympy
+
+    x_min = -20
+    x_max = 20
+    y_min = -20
+    y_max = 20
+
+    x = np.linspace(x_min,x_max,IN_n_states[0])
+    y = np.linspace(y_min,y_max,IN_n_states[1])
+
+    # Hyper Parameters
+    sigma = 0.35 # Spiral
+    warping_coeff = 0.01
+    decrease_coeff = 0.05 # decrease how Potential decrease when we get further from center
+    sinus_to_distance_coeff = 0.1
+
+    # Instantiation
+    potential_symbolic_value = np.zeros(IN_n_states)
+    n_petals = IN_number_of_branches
+
+    #--Symbolic Version of the potential--#
+    # Requires Sympy
+
+    # Symbolic variables for symbolic expression of the potential
+    x_symb, y_symb = spy.symbols('x_symb, y_symb', real=True)
+
+    # Transform coordinates from (x, y) to (angle, Distance)
+    angle_symb = spy.atan2(x_symb, y_symb)
+    distance_squared_symb = x_symb ** 2 + y_symb ** 2
+
+    # Use the chosen shape function
+    r_symb = (spy.sin((angle_symb + warping_coeff * distance_squared_symb) * n_petals) * sinus_to_distance_coeff * distance_squared_symb + 2)
+
+    # Apply the formula
+    potential_symbolic = -1*spy.exp( -1/2*(1)/(sigma*r_symb)**2)*(1+decrease_coeff*distance_squared_symb)
+
+    # Symbolic derivatives with respect to x and y
+    dpotsym_dx = potential_symbolic.diff(x_symb)
+    dpotsym_dy = potential_symbolic.diff(y_symb)
+
+    # Compute the expression over our discrete set of bins for checking purposes
+    # x = np.linspace(x_min, x_max, IN_n_states[0])
+    # y = np.linspace(y_min, y_max, IN_n_states[1])
+
+    for x_id in tqdm(range(IN_n_states[0])):
+        for y_id in range(IN_n_states[1]):
+            potential_symbolic_value[x_id, y_id] = potential_symbolic.evalf(subs={x_symb:x[x_id], y_symb:y[y_id]})
+
+    potential_symbolic_value = potential_symbolic_value - np.min(potential_symbolic_value[:]) # Shift so that minimum=0
+    potential_symbolic_value = potential_symbolic_value/np.sum(potential_symbolic_value[:]) # Normalize at the end because used non-normalized shape function r.
+    
+    if flag_visualize:
+        x, y = np.meshgrid(x, y)
+        z = potential_symbolic_value
+        fig = plt.figure()
+        ax = plt.axes(projection='3d')
+
+        surf = ax.plot_surface(x,y,z,cmap=cm.coolwarm,\
+                            linewidth=0, antialiased=False)
+        ax.set_xlabel('x')
+        ax.set_ylabel('y')
+        ax.set_zlabel('z')
+
+        fig.colorbar(surf, shrink=0.5, aspect=5)
+
+    return x, y, potential_symbolic_value, potential_symbolic
