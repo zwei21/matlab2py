@@ -115,6 +115,7 @@ def generate_potential_2d_spirals_symbolic(IN_n_states,IN_number_of_branches,fla
     for x_id in tqdm(range(IN_n_states[0])):
         for y_id in range(IN_n_states[1]):
             potential_symbolic_value[x_id, y_id] = potential_symbolic.evalf(subs={x_symb:x[x_id], y_symb:y[y_id]})
+            # worker <- paralleled 
 
     potential_symbolic_value = potential_symbolic_value - np.min(potential_symbolic_value[:]) # Shift so that minimum=0
     potential_symbolic_value = potential_symbolic_value/np.sum(potential_symbolic_value[:]) # Normalize at the end because used non-normalized shape function r.
