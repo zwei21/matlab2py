@@ -48,7 +48,7 @@ def generate_potential_2d_spirals_numeric(IN_n_states,IN_number_of_branches,flag
             potential_numeric[x_id,y_id] = -1*np.exp( -1/2*(1)/(sigma*r)**2)*(1+decrease_coeff*distance_squared)
 
     potential_numeric = potential_numeric - np.min(potential_numeric[:]) # Shift so that minimum=0
-    potential_numeric = potential_numeric/np.sum(potential_numeric[:]) # Normalize at the end because used non-normalized shape function r.
+    #potential_numeric = potential_numeric/np.sum(potential_numeric[:]) # Normalize at the end because used non-normalized shape function r.
 
     if flag_visualize:
         x, y = np.meshgrid(x, y)
@@ -67,7 +67,7 @@ def generate_potential_2d_spirals_numeric(IN_n_states,IN_number_of_branches,flag
     return x, y, potential_numeric
 
 
-def generate_potential_2d_spirals_symbolic(IN_n_states,IN_number_of_branches,flag_visualize):
+def generate_potential_2d_spirals_symbolic(IN_n_states,IN_number_of_branches,flag_visualize, flag_puresymbolic=False):
     # Sympy
 
     x_min = -20
@@ -102,12 +102,15 @@ def generate_potential_2d_spirals_symbolic(IN_n_states,IN_number_of_branches,fla
     r_symb = (spy.sin((angle_symb + warping_coeff * distance_squared_symb) * n_petals) * sinus_to_distance_coeff * distance_squared_symb + 2)
 
     # Apply the formula
-    potential_symbolic = -1*spy.exp( -1/2*(1)/(sigma*r_symb)**2)*(1+decrease_coeff*distance_squared_symb)
+    # Const to multi
+    mul = -1000
+    potential_symbolic = mul*spy.exp( -1/2*(1)/(sigma*r_symb)**2)*(1+decrease_coeff*distance_squared_symb)
 
     # Symbolic derivatives with respect to x and y
     dpotsym_dx = potential_symbolic.diff(x_symb)
     dpotsym_dy = potential_symbolic.diff(y_symb)
-
+    if flag_puresymbolic:
+        return potential_symbolic, dpotsym_dx, dpotsym_dy
     # Compute the expression over our discrete set of bins for checking purposes
     # x = np.linspace(x_min, x_max, IN_n_states[0])
     # y = np.linspace(y_min, y_max, IN_n_states[1])
@@ -118,7 +121,7 @@ def generate_potential_2d_spirals_symbolic(IN_n_states,IN_number_of_branches,fla
             # worker <- paralleled 
 
     potential_symbolic_value = potential_symbolic_value - np.min(potential_symbolic_value[:]) # Shift so that minimum=0
-    potential_symbolic_value = potential_symbolic_value/np.sum(potential_symbolic_value[:]) # Normalize at the end because used non-normalized shape function r.
+    #potential_symbolic_value = potential_symbolic_value/np.sum(potential_symbolic_value[:]) # Normalize at the end because used non-normalized shape function r.
     
     if flag_visualize:
         x, y = np.meshgrid(x, y)
