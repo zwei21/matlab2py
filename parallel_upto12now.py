@@ -8,6 +8,7 @@ import generate_potential_2d_Zshape as gp2Zs
 import generate_trajectory_Langevin_2D_from_symbolic as gt2La
 import sympy as spy
 import matplotlib.pyplot as plt
+
 def worker(name, potential_spiral):
     traj, _, _ = gt2La.generate_trajectory_Langevin_from_symbolic_2D(potential_symbolic=potential_spiral,position_initial=[0.01,0.01], friction=10,simul_lagtime=0.1,n_steps=100)
     return {name:traj}
@@ -41,3 +42,5 @@ def test_main():
     elapsed_sec = (end_t - start_t).total_seconds()
     print("多线程计算 共消耗: " + "{:.2f}".format(elapsed_sec) + " 秒")
     return result_s, results
+if __name__ == "__main__":
+    test_main()
