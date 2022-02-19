@@ -103,7 +103,7 @@ def generate_potential_2d_spirals_symbolic(IN_n_states,IN_number_of_branches,fla
 
     # Apply the formula
     # Const to multi
-    mul = -1000
+    mul = -1
     potential_symbolic = mul*spy.exp( -1/2*(1)/(sigma*r_symb)**2)*(1+decrease_coeff*distance_squared_symb)
 
     # Symbolic derivatives with respect to x and y
