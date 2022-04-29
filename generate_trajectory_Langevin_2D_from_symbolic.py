@@ -17,9 +17,13 @@ def generate_trajectory_Langevin_from_symbolic_2D(potential_symbolic,position_in
     t1 = time.time()
     temp_vars = potential_symbolic.free_symbols
     print(temp_vars)
+    temp_vars = list(temp_vars)
+    if str(temp_vars[0]) == 'x_symb':
+        x_symb, y_symb = list(temp_vars)
+    else:
+        y_symb, x_symb = list(temp_vars)
+    print([x_symb, y_symb])
     n_dim = len(temp_vars)
-    x_symb, y_symb = list(temp_vars) 
-    print(temp_vars)
     t2 = time.time()
     print('part1:', t2-t1)
     # Symbolic derivatives with respect to x and y
