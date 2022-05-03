@@ -1,4 +1,5 @@
 import sys
+import os
 sys.path.append('../')
 import scipy.io as scio
 from datetime import datetime
@@ -44,7 +45,9 @@ if args.manual:
         name = 'spiral'
     elif args.zshape:
         name = 'zshape'
-    filename = name + '_traj_Mconfig_' + str(datetime.now().date()) + '.json'
+
+    filepath = name + '_traj_Mconfig_' + str(datetime.now().date())
+    filename = filepath + '/' + name + '_traj_Mconfig_' + str(datetime.now().date()) + '.json'
 
     config_dict = {
         'metadata':CLIInput,
@@ -58,6 +61,9 @@ if args.manual:
     #print(filename)
 
     json_str = json.dumps(config_dict, indent=4)
+
+    if not os.path.exists(filepath):
+        os.mkdir(filepath)
 
     with open(filename, 'w') as f:  
         f.write(json_str)  

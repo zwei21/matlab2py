@@ -3,3 +3,4 @@ __pycache__/generate_potential_2d_spiral.cpython-38.pyc
 __pycache__/generate_trajectory_Langevin_2D_from_symbolic.cpython-38.pyc
 __pycache__/generate_potential_2d_spiral.cpython-38.pyc
 *.mat
+/__pycache__
