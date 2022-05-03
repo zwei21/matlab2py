@@ -2,13 +2,17 @@
 import numpy as np
 from tqdm import tqdm
 import time
+# Utils #
+def get_var_dict(eq):
+    return dict([[val.name, val] for val in list(eq.free_symbols)])
 
 def generate_trajectory_Langevin_from_symbolic_2D(potential_symbolic,position_initial, friction,simul_lagtime,n_steps):
     KbT = 0.5981
-
     # Temp vars is not required since symbolic math would include them directly
     # But it would be good to take a log as debugging propose 
     t1 = time.time()
+    vars_dict = get_var_dict(potential_symbolic)
+    '''
     temp_vars = potential_symbolic.free_symbols
     print(temp_vars)
     temp_vars = list(temp_vars)
@@ -17,7 +21,9 @@ def generate_trajectory_Langevin_from_symbolic_2D(potential_symbolic,position_in
     else:
         y_symb, x_symb = list(temp_vars)
     print([x_symb, y_symb])
-    n_dim = len(temp_vars)
+    '''
+    x_symb, y_symb = vars_dict['x_symb'], vars_dict['y_symb']
+    n_dim = len(vars_dict)
     t2 = time.time()
     print('part1:', t2-t1)
     # Symbolic derivatives with respect to x and y
