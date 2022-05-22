@@ -5,13 +5,14 @@
         "auto": false,
         "manual": true,
         "InNumStates": 100,
-        "branch": 2
+        "branch": 2,
+        "ntraj": 20
     },
     "initial_Position": [
-        0.01,
-        1e-06
+        0.0,
+        1.0
     ],
-    "friction": 1.0,
-    "simul_lagtime": 1.0,
-    "n_steps": 1
+    "friction": 5.0,
+    "simul_lagtime": 0.01,
+    "n_steps": 1000
 }

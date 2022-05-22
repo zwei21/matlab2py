@@ -8,7 +8,7 @@ import generate_potential_2d_spiral as gp2Sp
 import generate_potential_2d_Zshape as gp2Zs
 import generate_trajectory_Langevin_2D_from_symbolic as gt2La
 ###############################
-# Modify number of steps here##
+# Modify number of steps here #
 ###############################
 def worker(name, func):
     name = str(name)
