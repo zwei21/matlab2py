@@ -9,6 +9,22 @@ from src import generate_potential_2d_spiral as gen_spiral
 import json
 import argparse
 
+### Utils ###
+def append_name(filename):
+    temp_name = filename
+    i = 1
+    while os.path.exists(temp_name):
+        temp_name = filename + "-" + str(i)
+        i+=1
+    return temp_name
+
+'''
+Part1: argparse settings, receiving basic command to indicate
+ type of potentials, 
+ para config types(auto, manual), 
+ in_n_states,  
+ number of branches(opt, only used when doing spiral)
+'''
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-v', '--version', action='version',
@@ -31,6 +47,16 @@ CLIInput = vars(args)
 #print(args.zshape)
 #print(args.spiral)
 #print(args.InNumStates)
+'''
+Part2: Keyboard listeners/ config file reader, receiving data to indicate config dict of 
+        position_initial, 
+        friction, 
+        simul_lagtime, 
+        n_steps
+This part also yields generating a config folder including the config file saving all the data indicated to generate the traj
+The name of config folder is accurate to days and sensative to type of potential(for now its only spiral and zshape)
+    Warning: This indicate that any same kind of genetation of trajs in the same day would generate a same name of folder which would rewrite the previous data written in the same date
+'''
 if args.manual:
 
     position_initial_x, position_initial_y = input("Initial Position(x,y):").split()
@@ -47,6 +73,11 @@ if args.manual:
         name = 'zshape'
 
     filepath = name + '_traj_Mconfig_' + str(datetime.now().date())
+
+    filepath = append_name(filepath) # Judge if filepath already exist and deal with repeat condition
+    print(filepath)
+    os.mkdir(filepath)
+
     filename = filepath + '/' + name + '_traj_Mconfig_' + str(datetime.now().date()) + '.json'
 
     config_dict = {
@@ -62,9 +93,6 @@ if args.manual:
 
     json_str = json.dumps(config_dict, indent=4)
 
-    if not os.path.exists(filepath):
-        os.mkdir(filepath)
-
     with open(filename, 'w') as f:  
         f.write(json_str)  
 elif args.auto:
@@ -74,3 +102,5 @@ elif args.auto:
     with open(filename, 'r') as load_f:
         config_dict = json.load(load_f)
     print(config_dict)
+
+'''Part3: Call Worker Function and generate result'''

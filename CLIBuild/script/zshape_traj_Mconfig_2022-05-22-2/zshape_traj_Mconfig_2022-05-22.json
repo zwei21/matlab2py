@@ -1,0 +1,17 @@
+{
+    "metadata": {
+        "zshape": true,
+        "spiral": false,
+        "auto": false,
+        "manual": true,
+        "InNumStates": 100,
+        "branch": 2
+    },
+    "initial_Position": [
+        1.0,
+        1.0
+    ],
+    "friction": 2.0,
+    "simul_lagtime": 2.0,
+    "n_steps": 2
+}
