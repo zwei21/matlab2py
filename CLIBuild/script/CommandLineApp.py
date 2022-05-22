@@ -24,6 +24,9 @@ Part1: argparse settings, receiving basic command to indicate
  para config types(auto, manual), 
  in_n_states,  
  number of branches(opt, only used when doing spiral)
+
+ Result:
+ CLIInput(dict) ->> Part2
 '''
 parser = argparse.ArgumentParser()
 
@@ -55,7 +58,10 @@ Part2: Keyboard listeners/ config file reader, receiving data to indicate config
         n_steps
 This part also yields generating a config folder including the config file saving all the data indicated to generate the traj
 The name of config folder is accurate to days and sensative to type of potential(for now its only spiral and zshape)
-    Warning: This indicate that any same kind of genetation of trajs in the same day would generate a same name of folder which would rewrite the previous data written in the same date
+
+Result:
+config_dict ->> config.json -||(saved)
+config_dict ->> Part3
 '''
 if args.manual:
 
