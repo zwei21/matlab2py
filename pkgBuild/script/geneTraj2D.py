@@ -9,6 +9,7 @@ import json
 import multiprocessing as mp
 import numpy as np
 from tqdm import tqdm
+from functools import partial
 
 gen_traj_func = gen_traj.generate_trajectory_Langevin_from_symbolic_2D
 gen_pot_z_func = gen_zshape.generate_potential_2d_Zshape_symbolic
@@ -31,7 +32,7 @@ class workerFactory:
                                  friction=self.friction,
                                  simul_lagtime=self.simul_lagtime,
                                  n_steps=self.n_steps)
-        
+        #print("Thread " + str(name) + " Done.")
         return np.array(traj)
 
 #worker = workerFactory(config_dict)
@@ -70,9 +71,10 @@ def traj_factory(config, save_flag=True):
     ntraj = config['metadata']['ntraj']
     # Pooling process
     pool = mp.Pool(num_threads)
-    results = [pool.apply_async(worker.work, args=(i, potential)) for i in range(ntraj)]
+    #results = [pool.apply_async(worker.work, args=(i, potential)) for i in range(ntraj)]
+    results = list(tqdm(pool.imap(partial(worker.work, func=potential), range(ntraj)), total=ntraj))
     #print(type(results))
-    results = [p.get() for p in results]
+    #results = [p.get() for p in results]
     #print(type(results))
     pool.close()
     pool.join()

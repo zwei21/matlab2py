@@ -51,11 +51,13 @@ def pickOut(data, labels, cnum=2):
     '''
     assert len(data) == len(labels), "Data and Labels shoud have same dimension at axis 0"
     cls = list(set(labels)) # Given category of labels, defined as class of trajs
+    counts = [labels.count(i) for i in cls]
+    cls = [x for _,x in sorted(zip(counts,cls), reverse=True)]
     pData = []
     pLabels = []
     for idc in range(cnum):
         for idx in range(len(labels)):
-            if labels[idx] == idc:
+            if labels[idx] == cls[idc]:
                 pData.append(data[idx])
                 pLabels.append(labels[idx])
             else:
