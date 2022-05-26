@@ -5,3 +5,5 @@ __pycache__/generate_potential_2d_spiral.cpython-38.pyc
 *.mat
 /__pycache__
 CLIBuild/src/__pycache__/
+pkgBuild/src/__pycache__/
+pkgBuild/script/__pycache__/
